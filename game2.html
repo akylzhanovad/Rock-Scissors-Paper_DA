@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rock, Paper, Scissors Game</title>
+    <style>
+      #game-canvas {
+        border: 7px solid black;
+        width: 100%;
+        height: auto;
+        background-color: blue;
+      }
+      img {
+        width: 50px;
+        height: 50px;
+      }
+      #audio-container {
+  display: none; 
+}
+
+#wins, #losses {
+  display: inline-block;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 10px;
+  color: blue;
+}
+    </style>
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+    <div>
+      Wins: <span id="wins">0</span> Losses: <span id="losses">0</span>
+      <div id="audio-container">
+        <audio autoplay>
+          <source src="music.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+    </div>
+    <script>
+      const canvas = document.getElementById('game-canvas');
+      const context = canvas.getContext('2d');
+      const images = {
+        rock: new Image(),
+        paper: new Image(),
+        scissors: new Image()
+      };
+      let wins = 0;
+      let losses = 0;
+
+      function startGame() {
+        images.rock.src = 'rock.png';
+        images.paper.src = 'paper.png';
+        images.scissors.src = 'scissors.png';
+        gameLoop();
+      }
+      function gameLoop() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        const imageNames = Object.keys(images);
+        const image1 = images[imageNames[Math.floor(Math.random() * imageNames.length)]];
+        const image2 = images[imageNames[Math.floor(Math.random() * imageNames.length)]];
+        const image1X = Math.floor(Math.random() * (canvas.width - image1.width));
+        const image1Y = Math.floor(Math.random() * (canvas.height - image1.height));
+        const image2X = Math.floor(Math.random() * (canvas.width - image2.width));
+        const image2Y = Math.floor(Math.random() * (canvas.height - image2.height));
+        context.drawImage(image1, image1X, image1Y);
+        context.drawImage(image2, image2X, image2Y);
+
+        const dx = image1X - image2X;
+        const dy = image1Y - image2Y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+   
+        let result;
+        if (distance < image1.width*2+ image2.width*2) {
+          if (image1 === images.rock && image2 === images.scissors ||
+              image1 === images.paper && image2 === images.rock ||
+              image1 === images.scissors && image2 === images.paper) {
+            result = 'win';
+          } else if (image2 === images.rock && image1 === images.scissors ||
+                     image2 === images.paper && image1 === images.rock ||
+                     image2 === images.scissors && image1 === images.paper) {
+            result = 'loss';
+          } else {
+            result = 'tie';
+          }
+        }
+
+        if (result === 'win') {
+          wins++;
+          document.getElementById('wins').textContent = wins;
+        } else if (result === 'loss') {
+          losses++;
+          document.getElementById('losses').textContent = losses;
+        }
+        setTimeout(gameLoop, 1000 / 1);
+      }
+      startGame();
+    </script>
+  </body>
+</html>
